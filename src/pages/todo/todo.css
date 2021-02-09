@@ -1,58 +1,11 @@
-.App {
-  text-align: center;
-  display: flex;
-  justify-content: center;
-}
-
-button {
-  outline: none;
-  border: none;
-  box-shadow: 2px 0 2px currentColor;
-  border-radius: 4px;
-  min-height: 32px;
-  min-width: 80px;
-  padding: 4px 8px;
-}
-
-button:hover {
-  opacity: 0.85;
-}
-
-input[type="checkbox"] {
-  width: 24px;
-  height: 24px;
-  box-shadow: none;
-  border: none;
-  outline: none;
-}
-
-input[type="checkbox"]:focus {
-  box-shadow: none;
-  border: none;
-  outline: none;
-}
-
-input {
-  min-height: 36px;
-  border: none;
-  outline: none;
-  padding: 0 12px;
-  box-shadow: 2px 0 4px rgba(0,0,0, 0.2);
-  border-radius: 4px;
-}
-
-input:focus {
-  box-shadow: 1px 0 9px rgba(0,0,0, 0.25);
-}
-
 .ToDo__container {
+  background-color: white;
   border: 1px solid rgba(0,0,0, 0.13);
   border-radius: 8px;
   width: 500px;
   margin-top: 5rem;
   padding: 24px;
-  box-shadow: 2px 2px 1px rgba(0,0,0, 0.09),
-              3px 2px 3px rgba(0,0,0, 0.05);
+  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
 }
 
 .Todo__creation {
@@ -98,6 +51,10 @@ input:focus {
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  color: #f5222d;
+  background: #fff1f0;
+  border-color: #ffa39e;
+  border: solid 1px #ffa39e;
 }
 
 .Todo__action, .Todo__delete {
@@ -121,5 +78,16 @@ input:focus {
   margin-right: 8px;
 }
 
-.Action__btn {
+.ToDo__item__content {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.ToDo__item__error {
+  color: #f5222d;
+}
+
+.ToDo__item__edit {
+  width: 80%;
 }

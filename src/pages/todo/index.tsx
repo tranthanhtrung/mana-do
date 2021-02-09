@@ -1,40 +1,44 @@
 import React, {useEffect, useReducer, useRef, useState} from 'react';
 import {RouteComponentProps} from 'react-router-dom';
 
-import reducer, {initialState} from './store/reducer';
+import reducer, {initialState} from '../../store/reducer';
 import {
     setTodos,
     createTodo,
     deleteTodo,
+    updateTodo,
     toggleAllTodos,
     deleteAllTodos,
     updateTodoStatus
-} from './store/actions';
-import Service from './service';
-import {TodoStatus} from './models/todo';
-import {isTodoCompleted} from './utils';
+} from '../../store/actions';
+import Service from '../../service';
+import {TodoStatus} from '../../models/todo';
+import {isTodoCompleted} from '../../utils';
+import ToDoList from './todolist'
+import './todo.css'
 
 type EnhanceTodoStatus = TodoStatus | 'ALL';
 
 
-const ToDoPage = ({history}: RouteComponentProps) => {
-    const [{todos}, dispatch] = useReducer(reducer, initialState);
+const ToDo = ({history}: RouteComponentProps) => {
     const [showing, setShowing] = useState<EnhanceTodoStatus>('ALL');
+    // when a dispatch() of OOTB useReducer is called, some instances calls the reduce() twice.
+    // https://github.com/facebook/react/issues/16295
+    const [{todos}, dispatch] = useReducer(reducer, initialState);
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(()=>{
         (async ()=>{
             const resp = await Service.getTodos();
-
             dispatch(setTodos(resp || []));
         })()
     }, [])
 
     const onCreateTodo = async (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter' && inputRef.current) {
+        if (e.key === 'Enter' && inputRef.current && inputRef.current.value.length > 0) {
             try {
                 const resp = await Service.createTodo(inputRef.current.value);
-                dispatch(createTodo(resp));
+                dispatch(await createTodo(resp));
                 inputRef.current.value = '';
             } catch (e) {
                 if (e.response.status === 401) {
@@ -56,53 +60,28 @@ const ToDoPage = ({history}: RouteComponentProps) => {
         dispatch(deleteAllTodos());
     }
 
-    const showTodos = todos.filter((todo) => {
-        switch (showing) {
-            case TodoStatus.ACTIVE:
-                return todo.status === TodoStatus.ACTIVE;
-            case TodoStatus.COMPLETED:
-                return todo.status === TodoStatus.COMPLETED;
-            default:
-                return true;
-        }
-    });
-
     const activeTodos = todos.reduce(function (accum, todo) {
         return isTodoCompleted(todo) ? accum : accum + 1;
     }, 0);
 
     return (
         <div className="ToDo__container">
+            <h2>TO DO</h2>
             <div className="Todo__creation">
                 <input
                     ref={inputRef}
-                    className="Todo__input"
+                    className="Todo__input input"
                     placeholder="What need to be done?"
                     onKeyDown={onCreateTodo}
                 />
             </div>
-            <div className="ToDo__list">
-                {
-                    showTodos.map((todo, index) => {
-                        return (
-                            <div key={index} className="ToDo__item">
-                                <input
-                                    type="checkbox"
-                                    checked={isTodoCompleted(todo)}
-                                    onChange={(e) => onUpdateTodoStatus(e, todo.id)}
-                                />
-                                <span>{todo.content}</span>
-                                <button
-                                    className="Todo__delete"
-                                    onClick={() => dispatch(deleteTodo(todo.id))}
-                                >
-                                    X
-                                </button>
-                            </div>
-                        );
-                    })
-                }
-            </div>
+            <ToDoList 
+                todos={todos}
+                showing={showing}
+                onDelete={(id) => dispatch(deleteTodo(id))}
+                onUpdateTodoStatus={(e, id) => onUpdateTodoStatus(e, id)}
+                onSaveEdit={(id, value) => dispatch(updateTodo(id, value))}
+            />
             <div className="Todo__toolbar">
                 {todos.length > 0 ?
                     <input
@@ -112,17 +91,17 @@ const ToDoPage = ({history}: RouteComponentProps) => {
                     /> : <div/>
                 }
                 <div className="Todo__tabs">
-                    <button className="Action__btn" onClick={()=>setShowing('ALL')}>
+                    <button className="button--default" onClick={()=>setShowing('ALL')}>
                         All
                     </button>
-                    <button className="Action__btn" onClick={()=>setShowing(TodoStatus.ACTIVE)}>
+                    <button className="button--active" onClick={()=>setShowing(TodoStatus.ACTIVE)}>
                         Active
                     </button>
-                    <button className="Action__btn" onClick={()=>setShowing(TodoStatus.COMPLETED)}>
+                    <button className="button--completed" onClick={()=>setShowing(TodoStatus.COMPLETED)}>
                         Completed
                     </button>
                 </div>
-                <button className="Action__btn" onClick={onDeleteAllTodo}>
+                <button className="button--warning" onClick={onDeleteAllTodo}>
                     Clear all todos
                 </button>
             </div>
@@ -130,4 +109,4 @@ const ToDoPage = ({history}: RouteComponentProps) => {
     );
 };
 
-export default ToDoPage;
+export default ToDo;

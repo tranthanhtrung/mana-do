@@ -1,0 +1,45 @@
+.wrapper{
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+.Signin__form{
+  background-color: white;
+  max-width: 540px;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+}
+.Signin__header{
+  border-bottom: solid 1px #56baed;
+}
+.Signin__input{
+  background-color: #f6f6f6;
+  border: none;
+  color: #0d0d0d;
+  padding: 7px 32px;
+  text-align: center;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+  width: 250px;
+  border: 2px solid #f6f6f6;
+  border-radius: 5px;
+}
+.Signin__input:focus {
+  background-color: #fff;
+  border-bottom: 2px solid #5fbae9;
+}
+.Signin__btn {
+  width: 140px;
+  margin-top: 5px;
+  background-color: #5fbae9;
+  color: white;
+}
+.Signin__message{
+  color: #f5222d;
+  display: block;
+  margin: 7px 0;
+}
